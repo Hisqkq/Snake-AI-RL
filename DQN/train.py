@@ -90,7 +90,7 @@ def train():
                 last_10_mean_score = sum(scores) / len(scores)
             last_10_mean_scores.append(last_10_mean_score)
 
-            if agent.n_games % 10 == 0:
+            if agent.n_games % 100 == 0:
                 plot(scores, mean_scores, last_10_mean_scores)
 
 if __name__ == '__main__':

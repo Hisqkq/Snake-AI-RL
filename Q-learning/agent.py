@@ -6,7 +6,7 @@ from model import LinearQNet, QTrainer
 from snake_game import Direction, Point, SnakeGameAI
 
 MAX_MEMORY = 100_000
-BATCH_SIZE = 1000
+BATCH_SIZE = 512
 LR = 0.001
 
 class Agent:
