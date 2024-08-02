@@ -3,7 +3,7 @@ from plotly.subplots import make_subplots
 from agent import Agent
 from snake_game import SnakeGameAI
 
-def plot(scores, mean_scores, last_10_mean_scores):
+def plot(scores, mean_scores, last_10_mean_scores, last_100_mean_scores):
     fig = make_subplots(rows=1, cols=1)
 
     score_trace = go.Scatter(
@@ -33,9 +33,19 @@ def plot(scores, mean_scores, last_10_mean_scores):
         marker=dict(size=5)
     )
 
+    last_100_mean_score_trace = go.Scatter(
+        x=list(range(len(last_100_mean_scores))),
+        y=last_100_mean_scores,
+        mode='lines+markers',
+        name='Last 100 Mean Score',
+        line=dict(color='orange', width=2),
+        marker=dict(size=5)
+    )
+
     fig.add_trace(score_trace, row=1, col=1)
     fig.add_trace(mean_score_trace, row=1, col=1)
     fig.add_trace(last_10_mean_score_trace, row=1, col=1)
+    fig.add_trace(last_100_mean_score_trace, row=1, col=1)
 
     fig.update_layout(
         title='Training Progress',
@@ -56,6 +66,7 @@ def train():
     scores = []
     mean_scores = []
     last_10_mean_scores = []
+    last_100_mean_scores = []
     total_score = 0
     record = 0
     agent = Agent()
@@ -90,8 +101,14 @@ def train():
                 last_10_mean_score = sum(scores) / len(scores)
             last_10_mean_scores.append(last_10_mean_score)
 
+            if len(scores) >= 100:
+                last_100_mean_score = sum(scores[-100:]) / 100
+            else:
+                last_100_mean_score = sum(scores) / len(scores)
+            last_100_mean_scores.append(last_100_mean_score)
+
             if agent.n_games % 200 == 0:
-                plot(scores, mean_scores, last_10_mean_scores)
+                plot(scores, mean_scores, last_10_mean_scores, last_100_mean_scores)
 
 if __name__ == '__main__':
     train()
