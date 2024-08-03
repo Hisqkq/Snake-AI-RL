@@ -27,7 +27,7 @@ BLACK = (0, 0, 0)
 
 # Game settings
 BLOCK_SIZE = 20
-SPEED = 15
+SPEED = 2000
 
 class SnakeGameAI:
     def __init__(self, width=640, height=480):
@@ -165,4 +165,4 @@ if __name__ == "__main__":
         reward, done, score = game.play_step()
         if done:
             break
-        time.sleep(0.1)
+        time.sleep(0.01)
