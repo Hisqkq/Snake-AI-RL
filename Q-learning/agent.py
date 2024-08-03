@@ -1,23 +1,17 @@
-import torch
-import random
 import numpy as np
+import random
 from collections import deque
-from model import LinearQNet, QTrainer
 from snake_game import Direction, Point, SnakeGameAI
 
-MAX_MEMORY = 100_000
-BATCH_SIZE = 512
-LR = 0.001
-
-class Agent:
-
-    def __init__(self):
-        self.n_games = 0
-        self.epsilon = 0
+class QLearningAgent:
+    def __init__(self, actions):
+        self.actions = actions
+        self.step_size = 0.3
         self.gamma = 0.9
-        self.memory = deque(maxlen=MAX_MEMORY)
-        self.model = LinearQNet(11, 256, 3)
-        self.trainer = QTrainer(self.model, lr=LR, gamma=self.gamma)
+        self.epsilon = 1.0
+        self.epsilon_decay_rate = 0.95
+        self.min_epsilon = 0.001
+        self.q_table = dict()
 
     def get_state(self, game):
         head = game.snake[0]
@@ -32,58 +26,43 @@ class Agent:
         dir_d = game.direction == Direction.DOWN
 
         state = [
-            (dir_r and game.is_collision(point_r)) or 
-            (dir_l and game.is_collision(point_l)) or 
-            (dir_u and game.is_collision(point_u)) or 
-            (dir_d and game.is_collision(point_d)),
-
-            (dir_u and game.is_collision(point_r)) or 
-            (dir_d and game.is_collision(point_l)) or 
-            (dir_l and game.is_collision(point_u)) or 
-            (dir_r and game.is_collision(point_d)),
-
-            (dir_d and game.is_collision(point_r)) or 
-            (dir_u and game.is_collision(point_l)) or 
-            (dir_r and game.is_collision(point_u)) or 
-            (dir_l and game.is_collision(point_d)),
-
             dir_l,
             dir_r,
             dir_u,
             dir_d,
-
             game.food.x < game.head.x,
             game.food.x > game.head.x,
             game.food.y < game.head.y,
-            game.food.y > game.head.y
+            game.food.y > game.head.y,
+            game.is_collision(point_l),
+            game.is_collision(point_r),
+            game.is_collision(point_u),
+            game.is_collision(point_d)
         ]
 
-        return np.array(state, dtype=int)
+        return tuple(state)
 
-    def remember(self, state, action, reward, next_state, done):
-        self.memory.append((state, action, reward, next_state, done))
+    def act(self, state):
+        if state not in self.q_table:
+            self.q_table[state] = {a: 0.0 for a in self.actions}
 
-    def train_long_memory(self):
-        if len(self.memory) > BATCH_SIZE:
-            mini_sample = random.sample(self.memory, BATCH_SIZE)
-        else:
-            mini_sample = self.memory
+        if np.random.rand() <= self.epsilon:
+            return random.choice(self.actions)
 
-        states, actions, rewards, next_states, dones = zip(*mini_sample)
-        self.trainer.train_step(states, actions, rewards, next_states, dones)
+        q_values = self.q_table[state]
+        max_q = max(q_values.values())
+        actions_with_max_q = [a for a, q in q_values.items() if q == max_q]
 
-    def train_short_memory(self, state, action, reward, next_state, done):
-        self.trainer.train_step(state, action, reward, next_state, done)
+        return random.choice(actions_with_max_q)
 
-    def get_action(self, state):
-        self.epsilon = 80 - self.n_games
-        final_move = [0, 0, 0]
-        if random.randint(0, 200) < self.epsilon:
-            move = random.randint(0, 2)
-            final_move[move] = 1
-        else:
-            state0 = torch.tensor(state, dtype=torch.float)
-            prediction = self.model(state0)
-            move = torch.argmax(prediction).item()
-            final_move[move] = 1
-        return final_move
+    def update_q_value(self, state, reward, action, next_state, done):
+        if next_state not in self.q_table:
+            self.q_table[next_state] = {a: 0.0 for a in self.actions}
+
+        max_q_next = max(self.q_table[next_state].values())
+        self.q_table[state][action] += self.step_size * (
+            reward + self.gamma * max_q_next * (1.0 - done) - self.q_table[state][action]
+        )
+
+    def decay_epsilon(self):
+        self.epsilon = max(self.min_epsilon, self.epsilon * self.epsilon_decay_rate)

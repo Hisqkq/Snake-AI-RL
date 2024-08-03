@@ -24,7 +24,7 @@ ORANGE = (255, 165, 0)
 BLACK = (0, 0, 0)
 
 BLOCK_SIZE = 20
-SPEED = 120
+SPEED = 1200
 
 class SnakeGameAI:
 
@@ -66,7 +66,7 @@ class SnakeGameAI:
         self.snake.insert(0, self.head)
 
         reward = 0
-        if self.is_collision() or self.frame_iteration > 100 * len(self.snake):
+        if self.is_collision():
             reward = -10
             return reward, True, self.score
 
@@ -118,10 +118,10 @@ class SnakeGameAI:
 
     def _update_ui(self):
         self.display.fill(BLACK)
-        for pt in self.snake[1:]:
+        for pt in self.snake:
             pygame.draw.rect(self.display, GREEN, pygame.Rect(pt.x, pt.y, BLOCK_SIZE, BLOCK_SIZE))
-        pygame.draw.rect(self.display, ORANGE, pygame.Rect(self.head.x, self.head.y, BLOCK_SIZE, BLOCK_SIZE))
         pygame.draw.rect(self.display, RED, pygame.Rect(self.food.x, self.food.y, BLOCK_SIZE, BLOCK_SIZE))
+
         text = font.render("Score: " + str(self.score), True, WHITE)
         self.display.blit(text, [0, 0])
         pygame.display.flip()
