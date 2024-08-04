@@ -6,14 +6,14 @@ from model import DQN, QTrainer
 from snake_game import Direction, Point, SnakeGameAI
 
 MAX_MEMORY = 100_000
-BATCH_SIZE = 1000
+BATCH_SIZE = 512
 LR = 0.001
 
 class Agent:
     def __init__(self):
         self.n_games = 0
-        self.epsilon = 0  # randomness
-        self.gamma = 0.9  # discount rate
+        self.epsilon = 0  
+        self.gamma = 0.9 
         self.memory = deque(maxlen=MAX_MEMORY)
         self.model = DQN(11, 256, 3)
         self.trainer = QTrainer(self.model, lr=LR, gamma=self.gamma)
