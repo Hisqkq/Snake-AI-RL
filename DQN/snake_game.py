@@ -24,7 +24,7 @@ ORANGE = (255, 165, 0)
 BLACK = (0, 0, 0)
 
 BLOCK_SIZE = 20
-SPEED = 1200
+SPEED = 120
 
 class SnakeGameAI:
 
