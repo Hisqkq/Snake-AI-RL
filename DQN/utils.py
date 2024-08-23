@@ -3,7 +3,6 @@ import plotly.graph_objs as go
 from plotly.subplots import make_subplots
 
 def plot(scores, mean_scores, last_10_mean_scores, last_100_mean_scores):
-    # Dark theme plot
     fig_dark = make_subplots(rows=1, cols=1)
 
     score_trace_dark = go.Scatter(
@@ -56,7 +55,6 @@ def plot(scores, mean_scores, last_10_mean_scores, last_100_mean_scores):
 
     fig_dark.show()
 
-    # Light theme plot
     fig_light = make_subplots(rows=1, cols=1)
 
     score_trace_light = go.Scatter(

@@ -3,7 +3,7 @@ import random
 import numpy as np
 from collections import deque
 from model import DQN, QTrainer
-from snake_game import Direction, Point, SnakeGameAI
+from snake_game import Direction, Point
 
 MAX_MEMORY = 100_000
 BATCH_SIZE = 512

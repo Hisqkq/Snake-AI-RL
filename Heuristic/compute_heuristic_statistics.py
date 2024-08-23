@@ -1,6 +1,6 @@
 import numpy as np
 import time
-from snake_game_heuristic import SnakeGameAI, Direction, Point
+from snake_game_heuristic import SnakeGameAI
 
 def print_statistics(statistics):
     print("\nStatistics for the last 200 games:")

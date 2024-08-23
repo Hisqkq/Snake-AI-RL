@@ -1,10 +1,8 @@
 import torch
 import random
 import numpy as np
-from collections import deque
 from model import LinearQNet, QTrainer
-from snake_game import Direction, Point, SnakeGameAI
-import heapq
+from snake_game import Direction, Point
 
 MAX_MEMORY = 100_000
 BATCH_SIZE = 512

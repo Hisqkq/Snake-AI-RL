@@ -1,4 +1,3 @@
-import numpy as np
 from agent import QLearningAgent
 from snake_game import SnakeGameAI
 from utils import plot, compute_statistics, print_statistics

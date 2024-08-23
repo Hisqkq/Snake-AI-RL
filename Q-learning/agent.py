@@ -1,7 +1,6 @@
 import numpy as np
 import random
-from collections import deque
-from snake_game import Direction, Point, SnakeGameAI
+from snake_game import Direction, Point
 
 class QLearningAgent:
     def __init__(self, actions):
