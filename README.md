@@ -1,4 +1,4 @@
-# 🐍 AI Snake Game
+# 🐍 AI Snake Reinforcement learning
 
 Welcome to the AI Snake Game project! This repository showcases various AI methods to play the classic Snake game, including Heuristic, Q-learning, Deep Q-Networks (DQN), and Prioritized Experience Replay (PER). Each method is implemented and evaluated for performance. 
 
